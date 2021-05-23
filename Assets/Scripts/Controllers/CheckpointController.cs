@@ -26,23 +26,32 @@ public class CheckpointController : MonoBehaviour
         }
 
         Debug.Log(_checkPointIds.Count);
-        // GetCheckPointID("08f2a7f4-dd1a-4720-b478-076e88081739");  //for testing 
+         GetCheckPointID("08f2a7f4-dd1a-4720-b478-076e88081739");  //for testing 
     }
 
     public void GetCheckPointID(string ID)
     {
         GameObject tempo = _checkPointIds.FirstOrDefault(x => x.Key == ID).Value; //Linq assist
         Debug.Log(tempo.name);
+        //----------------
+        string _fromPlayerPrefs = PlayerPrefs.GetString("CPID");
+        if (!string.IsNullOrEmpty(_fromPlayerPrefs))
+        {
+            Debug.Log("stored check point " + _fromPlayerPrefs );
+        }
+        //-------------------
     }
 
     public void SetLastCheckPointID(string ID)
     {
-        JsonCheckpoint checkpointJson = new JsonCheckpoint(); 
-        TextAsset _jsonText = Resources.Load("Json/checkpointJson") as TextAsset;
-        checkpointJson.checkpointID = ID;
-        string jsonSavePath = Application.persistentDataPath + "/Resources/Json/checkpointJson.json";
-        string jsonOutput = JsonUtility.ToJson(checkpointJson);
-        File.WriteAllText(jsonSavePath,jsonOutput);
+        // JsonCheckpoint checkpointJson = new JsonCheckpoint(); 
+        // TextAsset _jsonText = Resources.Load("Json/checkpointJson") as TextAsset;
+        // checkpointJson.checkpointID = ID;
+        // string jsonSavePath = Application.persistentDataPath + "/Resources/Json/checkpointJson.json";
+        // string jsonOutput = JsonUtility.ToJson(checkpointJson);
+        // File.WriteAllText(jsonSavePath,jsonOutput);
+        PlayerPrefs.SetString("CPID", ID);
+        Debug.Log("recorded  in player prefs ");
     }
 
     #region Observer Pattern for Checkpoints

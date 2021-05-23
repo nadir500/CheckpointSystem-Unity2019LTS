@@ -52,6 +52,7 @@ public class CheckpointDataModel : MonoBehaviour ,ISerializationCallbackReceiver
     public void OnCheckpointChangeID()
     {
         _checkpointController.GetCheckPointID(objID);
+        _checkpointController.SetLastCheckPointID(objID);
     }
 
     private void OnTriggerEnter(Collider other)

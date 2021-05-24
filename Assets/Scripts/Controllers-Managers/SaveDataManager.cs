@@ -9,16 +9,29 @@ using UnityEngine.UI;
 
 public class SaveDataManager : MonoBehaviour
 {
-    public Text text; 
+    public Text text;
+
     private void Awake()
+    {
+        Save();
+        Load();
+    }
+
+    public void Save()
     {
         SaveData saveData = new SaveData();
         saveData.player = "pain";
         string _saveFilePath = Application.persistentDataPath + "/savedata.data"; //for SaveData class
+        WriteToBinary(saveData, _saveFilePath);
+    }
 
-        WriteToBinary(saveData,_saveFilePath);
+    public void Load()
+    {
+        string _saveFilePath = Application.persistentDataPath + "/savedata.data"; //for SaveData class
         ReadFromBinaryPlayerData(_saveFilePath);
     }
+
+    #region Read/Write Binary Files
 
     private void WriteToBinary(SaveData saveDataModel, string saveFilePath)
     {
@@ -28,10 +41,15 @@ public class SaveDataManager : MonoBehaviour
 
     private void ReadFromBinaryPlayerData(string saveFilePath)
     {
-      SaveData playerData = ReadFromBinaryFile<SaveData>(saveFilePath);
-     // Debug.Log(playerData.ToString());
-      text.text = playerData.ToString();
+        SaveData playerData = ReadFromBinaryFile<SaveData>(saveFilePath);
+        // Debug.Log(playerData.ToString());
+        text.text = playerData.ToString();
     }
+
+    #endregion
+
+    #region generic types functions
+
     public static void WriteToBinaryFile<T>(string filePath, T objectToWrite, bool append = false)
     {
         using (Stream stream = File.Open(filePath, append ? FileMode.Append : FileMode.Create))
@@ -49,4 +67,6 @@ public class SaveDataManager : MonoBehaviour
             return (T) binaryFormatter.Deserialize(stream);
         }
     }
+
+    #endregion
 }

@@ -7,7 +7,8 @@ using UnityEngine;
 
 public class CheckpointController : MonoBehaviour
 {
-    [SerializeField] private Dictionary<string, GameObject> _checkPointIds;
+    private static  CheckpointController _instance; 
+    [SerializeField] private static Dictionary<string, GameObject> _checkPointIds;
     [SerializeField] private GameObject _checkpointParent;
     private List<ICheckpointHandler> _checkpointsObservers;
     
@@ -15,6 +16,7 @@ public class CheckpointController : MonoBehaviour
     {
         _checkpointsObservers = new List<ICheckpointHandler>();
         _checkPointIds = new Dictionary<string, GameObject>();
+        _instance = this; 
         int _childCount = _checkpointParent.transform.childCount;
         string _childID = "";
         GameObject _checkpointTemp;

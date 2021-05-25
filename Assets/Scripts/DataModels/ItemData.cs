@@ -31,7 +31,7 @@ public override string ToString()
     stringBuilder.Append(" item id--> ");
     stringBuilder.Append(id);
     stringBuilder.Append(" icon sprite name--> ");
-    stringBuilder.Append(icon.name);
+//    stringBuilder.Append(icon.name);
     return base.ToString();
 }
 

@@ -58,17 +58,17 @@ public class InventoryManager : MonoBehaviour
     {
         int _currentValue = 0;
          //fill static dictionary we have 
-         ItemData validItemData = FetchItemData(itemData);
-        itemDictionary.TryGetValue(validItemData, out _currentValue); //passing ID of the item 
+         ItemData _validItemData = FetchItemData(itemData);
+        itemDictionary.TryGetValue(_validItemData, out _currentValue); //passing ID of the item 
         if (_currentValue != 0) //already exist in inventory  
         {
             Debug.Log("item exist number = " + _currentValue);
             _currentValue++;
-            itemDictionary[validItemData] = _currentValue;
+            itemDictionary[_validItemData] = _currentValue;
         }
         else //didn't find the item in inventory 
         {
-            itemDictionary.Add(validItemData, _currentValue);
+            itemDictionary.Add(_validItemData, _currentValue);
             //send UI request to update the UI 
 
             //
@@ -91,17 +91,17 @@ public class InventoryManager : MonoBehaviour
     public void RemoveItem(ItemData itemData)
     {
         int _currentValue = 0;
-        ItemData validItemData = FetchItemData(itemData);
-        if (itemDictionary.TryGetValue(validItemData, out _currentValue))
+        ItemData _validItemData = FetchItemData(itemData);
+        if (itemDictionary.TryGetValue(_validItemData, out _currentValue))
         {
             if (_currentValue == 1)
             {
-                itemDictionary.Remove(validItemData);
+                itemDictionary.Remove(_validItemData);
             }
             else
             {
                 _currentValue--;
-                itemDictionary[validItemData] = _currentValue;
+                itemDictionary[_validItemData] = _currentValue;
             }
         }
         //update UI 

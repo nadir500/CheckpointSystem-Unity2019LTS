@@ -34,12 +34,12 @@ public class CheckpointController : MonoBehaviour
     public void GetCheckPointID(string ID)
     {
         GameObject tempo = _checkPointIds.FirstOrDefault(x => x.Key == ID).Value; //Linq assist
-        Debug.Log(tempo.name);
+        // Debug.Log(tempo.name);
         //----------------
         string _fromPlayerPrefs = PlayerPrefs.GetString("CPID");
         if (!string.IsNullOrEmpty(_fromPlayerPrefs))
         {
-            Debug.Log("stored check point " + _fromPlayerPrefs );
+            // Debug.Log("stored check point " + _fromPlayerPrefs );
         }
         //-------------------
     }
@@ -53,7 +53,7 @@ public class CheckpointController : MonoBehaviour
         // string jsonOutput = JsonUtility.ToJson(checkpointJson);
         // File.WriteAllText(jsonSavePath,jsonOutput);
         PlayerPrefs.SetString("CPID", ID);
-        Debug.Log("recorded  in player prefs ");
+        // Debug.Log("recorded  in player prefs ");
     }
 
     #region Observer Pattern for Checkpoints

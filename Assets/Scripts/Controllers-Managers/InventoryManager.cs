@@ -90,6 +90,7 @@ public class InventoryManager : MonoBehaviour
     //remove method 
     public void RemoveItem(ItemData itemData)
     {
+        Debug.Log("RemoveItem");
         int _currentValue = 0;
         ItemData _validItemData = FetchItemData(itemData);
         if (itemDictionary.TryGetValue(_validItemData, out _currentValue))

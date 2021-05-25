@@ -11,11 +11,11 @@ public class InventorySlotUI : MonoBehaviour
 
     private void Start()
     {
-        _slotButton.onClick.AddListener(()=> OnClickEvent());
+        //_slotButton.onClick.AddListener(()=> OnClickEvent());
     }
 
     private void OnClickEvent()
     {
-        InventoryManager._instance.RemoveItem(itemData);
+      //  InventoryManager._instance.RemoveItem(itemData);
     }
 }

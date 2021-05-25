@@ -39,12 +39,13 @@ public class InventoryManager : MonoBehaviour
         _columns = 8;
         _rows = 3;
         itemDictionary = GenerateRandomItems();
+        AddItem(new ItemData(300, null),20);
 ;    }
 
     private Dictionary<ItemData,int> GenerateRandomItems()
     {
         Dictionary<ItemData, int> dicTemp = new Dictionary<ItemData, int>();
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 4; i++)
         {
             dicTemp.Add(new ItemData( Random.Range(i,100),null),Random.Range(1,4));  //id, item count 
         }
@@ -54,7 +55,7 @@ public class InventoryManager : MonoBehaviour
 
    
     //add method 
-    public void AddItem(ItemData itemData)
+    public void AddItem(ItemData itemData , int count =1)
     {
         int _currentValue = 0;
          //fill static dictionary we have 
@@ -68,7 +69,7 @@ public class InventoryManager : MonoBehaviour
         }
         else //didn't find the item in inventory 
         {
-            itemDictionary.Add(_validItemData, _currentValue);
+            itemDictionary.Add(_validItemData, count);
             //send UI request to update the UI 
 
             //
@@ -85,7 +86,7 @@ public class InventoryManager : MonoBehaviour
              return item.Key;
             }
         }
-        return null;
+        return itemData;
     }
     //remove method 
     public void RemoveItem(ItemData itemData)

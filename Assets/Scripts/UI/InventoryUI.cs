@@ -48,8 +48,8 @@ public class InventoryUI : MonoBehaviour
         }
         for (int i = 0; i < textsList.Count; i++)
         {
-            _itemTexts[i].text = textsList[i].ToString();
-            // ItemCountText(textsList[i],i);
+            // _itemTexts[i].text = textsList[i].ToString();
+            ItemCountText(textsList[i],i);
         }
 
         _itemDataArray = itemDataList.ToArray(); //copy from dictionary 

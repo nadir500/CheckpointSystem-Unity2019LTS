@@ -34,4 +34,17 @@ public override string ToString()
     stringBuilder.Append(icon.name);
     return base.ToString();
 }
+
+public override bool Equals(object obj)
+{
+    if (obj == null)
+        return false;
+
+    ItemData itemData = obj as ItemData;
+    if ((System.Object) itemData == null)
+        return false;
+
+    return (id == itemData.id); 
+
+}
 }

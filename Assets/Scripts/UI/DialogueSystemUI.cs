@@ -43,14 +43,16 @@ public class DialogueSystemUI : MonoBehaviour
         string[] resultSplit = messageText.Split(' ');
         // yield return  new WaitUntil(() => Input.GetKeyDown(KeyCode.A));
 
-         for (int i = 0; i < resultSplit.Length; i++)
+        for (int i = 0; i < resultSplit.Length; i++)
         {
-            Debug.Log("split strings " + i) ;
-           StartCoroutine(_dialogueSystemManager.TypeText( _dialogueTextPanel,resultSplit[i],0.1f));
+            Debug.Log("split strings " + i);
+            StartCoroutine(_dialogueSystemManager.TypeText(_dialogueTextPanel, resultSplit[i], 0.1f));
             // yield return 0;
-       
-            yield return  new WaitUntil(() => Input.GetKeyDown(KeyCode.A));
-            yield return new WaitForSeconds(0.1f); //for syncing the indexes and not getting all missed up texts  TODO: needs thorough solution more than this 
+
+            yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.A));
+            yield return
+                new WaitForSeconds(
+                    0.1f); //for syncing the indexes and not getting all missed up texts  TODO: needs thorough solution more than this 
             //   yield return new WaitWhile(() => Input.GetKeyUp(KeyCode.A));
         }
     }

@@ -16,7 +16,7 @@ public class ResolutionSettingsUI : MonoBehaviour
     void Awake()
     {
         Initialize();
-        SetGraphicsSettings();
+        SetGraphicsSettings();//on UI
     }
 
     private void Initialize()
@@ -41,10 +41,10 @@ public class ResolutionSettingsUI : MonoBehaviour
     }
 
     //set values on UI
-    private void SetGraphicsSettings()
+    private void SetGraphicsSettings() 
     {
         StringBuilder stringBuilder = new StringBuilder();
-        FullScreenMode[] options = {
+        FullScreenMode[] fullScreenOptions = {
             FullScreenMode.ExclusiveFullScreen,
             FullScreenMode.FullScreenWindow, //FullScreenWindow = BorderlessFullscreen. MaximizedWindow is a MacOS-only thing.
             FullScreenMode.Windowed
@@ -65,23 +65,45 @@ public class ResolutionSettingsUI : MonoBehaviour
                     }
                     break;
                 case "_wm":
-                    _settingsParametersComponents[i].values = new string[options.Length];
-                    for (int j = 0; j < options.Length; j++)
+                    _settingsParametersComponents[i].values = new string[fullScreenOptions.Length];
+                    for (int j = 0; j < fullScreenOptions.Length; j++)
                     {
-                        stringBuilder.Append(options[j].ToString());
+                        stringBuilder.Append(fullScreenOptions[j].ToString());
                         _settingsParametersComponents[i].values[j] = stringBuilder.ToString();
                         stringBuilder.Clear();
                     }
                     break;
                 case "_v_sync":
+                    _settingsParametersComponents[i].values = new string[2];
+                    _settingsParametersComponents[i].values[0] = "OFF";
+                    _settingsParametersComponents[i].values[1] = "ON";
                     break;
                 case "_mquality":
+                    _settingsParametersComponents[i].values = new string[3];
+                    _settingsParametersComponents[i].values[0] = "Low";
+                    _settingsParametersComponents[i].values[1] = "Medium";
+                    _settingsParametersComponents[i].values[2] = "High";
                     break;
                 case "_msaa":
+                    //needs to be searched in settings 
+                    _settingsParametersComponents[i].values = new string[3];
+                    _settingsParametersComponents[i].values[0] = "2";
+                    _settingsParametersComponents[i].values[1] = "4";
+                    _settingsParametersComponents[i].values[2] = "8";
                     break;
                 case "_texquality":
+                    //needs to be searched in settings 
+                    _settingsParametersComponents[i].values = new string[3];
+                    _settingsParametersComponents[i].values[0] = "Low";
+                    _settingsParametersComponents[i].values[1] = "Medium";
+                    _settingsParametersComponents[i].values[2] = "High";
                     break;
                 case "_shadows":
+                    //needs to be searched in settings 
+                    _settingsParametersComponents[i].values = new string[3];
+                    _settingsParametersComponents[i].values[0] = "Low";
+                    _settingsParametersComponents[i].values[1] = "Medium";
+                    _settingsParametersComponents[i].values[2] = "High";
                     break;
             }
         }

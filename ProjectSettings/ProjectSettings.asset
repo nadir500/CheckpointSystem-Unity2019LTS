@@ -582,7 +582,19 @@ PlayerSettings:
   webGLLinkerTarget: 1
   webGLThreadsSupport: 0
   webGLWasmStreaming: 0
-  scriptingDefineSymbols: {}
+  scriptingDefineSymbols:
+    1: TMP_PRESENT;HDRP_PRESENT
+    4: TMP_PRESENT;HDRP_PRESENT
+    7: TMP_PRESENT;HDRP_PRESENT
+    13: TMP_PRESENT;HDRP_PRESENT
+    14: TMP_PRESENT;HDRP_PRESENT
+    19: TMP_PRESENT;HDRP_PRESENT
+    21: TMP_PRESENT;HDRP_PRESENT
+    25: TMP_PRESENT;HDRP_PRESENT
+    27: TMP_PRESENT;HDRP_PRESENT
+    28: TMP_PRESENT;HDRP_PRESENT
+    29: TMP_PRESENT;HDRP_PRESENT
+    30: TMP_PRESENT;HDRP_PRESENT
   platformArchitecture: {}
   scriptingBackend: {}
   il2cppCompilerConfiguration: {}

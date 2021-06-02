@@ -7,7 +7,7 @@ using UnityEngine;
 public class IKManager : MonoBehaviour
 {
     private Vector3 _rightFootPosition, _leftFootPosition, _leftFootIKPosition, _rightFootIKPosition;
-    private Quaternion _leftFootIKRotation, _rightFootIKRotation;
+    private Quaternion _leftFootIKRotation, _rightFootIKRotation, _headIKRotation;
     private float _lastPelvisPositionY, _lastRightFootPositionY, _lastLeftFootPositionY;
 
     [Header("----Feet Grounder----")] public bool enableFeet = true;
@@ -21,11 +21,21 @@ public class IKManager : MonoBehaviour
     [SerializeField] private Animator _animator;
     public string leftFootAnimationVariableName = "LeftFootCurve";
     public string rightFootAnimationVariableName = "RightFootCurve";
+    public string headAnimationVariableName = "HeadCurve";
+
+    [Header("----Head Position IK----")] [SerializeField]
+    private bool _headFollow;
+
+    [SerializeField] private Transform _headTargetToLookAt;
+    // [Header("---Chest Position IK---")]
+    // [SerializeField] private Transform _chestTargetIK; 
+    //
 
     public bool useProIKFeatures = false;
     public bool showSolverDebugMode = true;
 
     // [SerializeField] private Transform leftfootTR; 
+
     #region FeetGround
 
     private void FixedUpdate()
@@ -47,10 +57,23 @@ public class IKManager : MonoBehaviour
         FeetPositionSolver(_rightFootPosition, ref _rightFootIKPosition,
             ref _rightFootIKRotation); //handle solver for right foot
         FeetPositionSolver(_leftFootPosition, ref _leftFootIKPosition, ref _leftFootIKRotation); //handle left foot 
+
+        /*
+         * Head rotation IK Solver
+         * Calculate the angle between a random point and the head, make strict rotation based on it
+         */
+        AdjustHeadTarget(ref _headIKRotation, HumanBodyBones.Head);
+
+        //head solver for finding angle 
     }
 
     private void OnAnimatorIK(int layerIndex)
     {
+        if (!_headFollow)
+        {
+            return;
+        }
+
         if (!enableFeet)
         {
             return;
@@ -82,6 +105,20 @@ public class IKManager : MonoBehaviour
         }
 
         MoveFeetToIKPoint(AvatarIKGoal.LeftFoot, _leftFootIKPosition, _leftFootIKRotation, ref _lastLeftFootPositionY);
+
+        /*
+         * Head IK 
+         */
+        if (useProIKFeatures)
+        {
+            _animator.SetLookAtWeight(_animator.GetFloat(headAnimationVariableName));
+        }
+        else
+        {
+            _animator.SetLookAtWeight(1);
+        }
+
+        RotateHeadToIKPoint(_headIKRotation, _headTargetToLookAt.position);
     }
 
     #endregion
@@ -154,17 +191,48 @@ public class IKManager : MonoBehaviour
             feetIKRotations = Quaternion.FromToRotation(Vector3.up, feetOutHit.normal) * transform.rotation;
             return;
         }
-        feetIKPosition= Vector3.zero; // 
+
+        feetIKPosition = Vector3.zero; // 
         Debug.Log("feet ik position is zero, didn't work");
-        
     }
 
     private void AdjustFeetTarget(ref Vector3 feetPosition, HumanBodyBones foot)
     {
         feetPosition = _animator.GetBoneTransform(foot).position;
         // feetPosition = leftfootTR.position;
-        feetPosition.y = transform.position.y + heightFromGraoundRaycast;
-        
+        feetPosition.y =
+            transform.position.y +
+            heightFromGraoundRaycast; //assign raycast offset the ground TODO: fix spelling error 
+    }
+
+    #endregion
+
+    #region Head Ground Method
+
+    private void RotateHeadToIKPoint(Quaternion headIKRotation, Vector3 target)
+    {
+        Quaternion targetRotation = Quaternion.Euler(target);
+        float angle;
+        float finalLookWeight = 0;
+        // float minRotation = -45;
+        // float maxRotation = 45;
+        // Vector3 currentRotation = transform.localRotation.eulerAngles;
+        // currentRotation.y = Mathf.Clamp(currentRotation.y, minRotation, maxRotation);
+        // transform.localRotation = Quaternion.Euler (currentRotation);
+        if (headIKRotation != Quaternion.identity)
+        {
+            //calculate the angle and restrict it 
+            angle = Quaternion.Angle(headIKRotation, targetRotation);
+            Debug.Log("Angle 2 vectors " + angle);
+
+            _animator.SetLookAtPosition(target);
+        }
+    }
+
+    //assign head pass by ref 
+    private void AdjustHeadTarget(ref Quaternion headRotation, HumanBodyBones head)
+    {
+        headRotation = _animator.GetBoneTransform(head).rotation; //get bone current rotation of the animator bone 
     }
 
     #endregion

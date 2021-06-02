@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class IKManager : MonoBehaviour
 {
-    private Vector3 _rightFootPosition, _leftFootPosition, _leftFootIKPosition, _rightFootIKPosition;
+    private Vector3 _rightFootPosition, _leftFootPosition, _leftFootIKPosition, _rightFootIKPosition, _headIKPosition;
     private Quaternion _leftFootIKRotation, _rightFootIKRotation, _headIKRotation;
     private float _lastPelvisPositionY, _lastRightFootPositionY, _lastLeftFootPositionY;
 
@@ -62,7 +62,7 @@ public class IKManager : MonoBehaviour
          * Head rotation IK Solver
          * Calculate the angle between a random point and the head, make strict rotation based on it
          */
-        AdjustHeadTarget(ref _headIKRotation, HumanBodyBones.Head);
+        AdjustHeadTarget(ref _headIKRotation, ref _headIKPosition, HumanBodyBones.Head);
 
         //head solver for finding angle 
     }
@@ -115,10 +115,10 @@ public class IKManager : MonoBehaviour
         }
         else
         {
-            _animator.SetLookAtWeight(1);
+          //  _animator.SetLookAtWeight(1,0.4f);
         }
 
-        RotateHeadToIKPoint(_headIKRotation, _headTargetToLookAt.position);
+        RotateHeadToIKPoint(_headIKRotation, _headIKPosition, _headTargetToLookAt.position);
     }
 
     #endregion
@@ -209,29 +209,38 @@ public class IKManager : MonoBehaviour
 
     #region Head Ground Method
 
-    private void RotateHeadToIKPoint(Quaternion headIKRotation, Vector3 target)
+    private void RotateHeadToIKPoint(Quaternion headIKRotation, Vector3 headIKPosition, Vector3 target)
     {
         Quaternion targetRotation = Quaternion.Euler(target);
+        Vector3 relativePos = target - headIKPosition;
+
         float angle;
         float finalLookWeight = 0;
-        // float minRotation = -45;
-        // float maxRotation = 45;
-        // Vector3 currentRotation = transform.localRotation.eulerAngles;
-        // currentRotation.y = Mathf.Clamp(currentRotation.y, minRotation, maxRotation);
-        // transform.localRotation = Quaternion.Euler (currentRotation);
-        if (headIKRotation != Quaternion.identity)
+        float elapsedTime = 0;
+        float timeReaction = 0.5f;
+        float state = 0;
+        // calculate the angle and restrict it 
+        angle = Vector3.Angle(relativePos, transform.forward);
+        // Debug.Log("Angle 2 vectors " + angle); 
+        angle = Mathf.FloorToInt(angle);
+        if (angle < 53.5f) //TODO: needs more maintain 
         {
-            //calculate the angle and restrict it 
-            angle = Quaternion.Angle(headIKRotation, targetRotation);
-            Debug.Log("Angle 2 vectors " + angle);
-
+            _animator.SetLookAtWeight(1,0.4f);
             _animator.SetLookAtPosition(target);
+        }
+        else
+        {
+            // elapsedTime += Time.deltaTime;
+            // state = Mathf.Lerp(1, 0, 1.0f);
+            // Debug.Log("state " + state +" " + Time.deltaTime);
+            _animator.SetLookAtWeight(0,0);
         }
     }
 
     //assign head pass by ref 
-    private void AdjustHeadTarget(ref Quaternion headRotation, HumanBodyBones head)
+    private void AdjustHeadTarget(ref Quaternion headRotation, ref Vector3 headPosition, HumanBodyBones head)
     {
+        headPosition = _animator.GetBoneTransform(head).position;
         headRotation = _animator.GetBoneTransform(head).rotation; //get bone current rotation of the animator bone 
     }
 

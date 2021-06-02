@@ -9,7 +9,7 @@ public class IKManager : MonoBehaviour
     private Vector3 _rightFootPosition, _leftFootPosition, _leftFootIKPosition, _rightFootIKPosition, _headIKPosition;
     private Quaternion _leftFootIKRotation, _rightFootIKRotation, _headIKRotation;
     private float _lastPelvisPositionY, _lastRightFootPositionY, _lastLeftFootPositionY;
-
+    private Transform _headIKTransform;
     [Header("----Feet Grounder----")] public bool enableFeet = true;
 
     [Range(0, 2)] [SerializeField] private float heightFromGraoundRaycast = 1.14f;
@@ -62,7 +62,7 @@ public class IKManager : MonoBehaviour
          * Head rotation IK Solver
          * Calculate the angle between a random point and the head, make strict rotation based on it
          */
-        AdjustHeadTarget(ref _headIKRotation, ref _headIKPosition, HumanBodyBones.Head);
+        AdjustHeadTarget(ref _headIKRotation, ref _headIKPosition, ref _headIKTransform, HumanBodyBones.Head);
 
         //head solver for finding angle 
     }
@@ -115,10 +115,10 @@ public class IKManager : MonoBehaviour
         }
         else
         {
-          //  _animator.SetLookAtWeight(1,0.4f);
+            //  _animator.SetLookAtWeight(1,0.4f);
         }
 
-        RotateHeadToIKPoint(_headIKRotation, _headIKPosition, _headTargetToLookAt.position);
+        RotateHeadToIKPoint(_headIKRotation, _headIKPosition, _headIKTransform, _headTargetToLookAt.position);
     }
 
     #endregion
@@ -209,7 +209,8 @@ public class IKManager : MonoBehaviour
 
     #region Head Ground Method
 
-    private void RotateHeadToIKPoint(Quaternion headIKRotation, Vector3 headIKPosition, Vector3 target)
+    private void RotateHeadToIKPoint(Quaternion headIKRotation, Vector3 headIKPosition, Transform headIKTransform,
+        Vector3 target)
     {
         Quaternion targetRotation = Quaternion.Euler(target);
         Vector3 relativePos = target - headIKPosition;
@@ -219,29 +220,46 @@ public class IKManager : MonoBehaviour
         float elapsedTime = 0;
         float timeReaction = 0.5f;
         float state = 0;
+ 
         // calculate the angle and restrict it 
         angle = Vector3.Angle(relativePos, transform.forward);
         // Debug.Log("Angle 2 vectors " + angle); 
         angle = Mathf.FloorToInt(angle);
-        if (angle < 53.5f) //TODO: needs more maintain 
-        {
-            _animator.SetLookAtWeight(1,0.4f);
-            _animator.SetLookAtPosition(target);
-        }
-        else
-        {
-            // elapsedTime += Time.deltaTime;
-            // state = Mathf.Lerp(1, 0, 1.0f);
-            // Debug.Log("state " + state +" " + Time.deltaTime);
-            _animator.SetLookAtWeight(0,0);
-        }
+        // if (angle < 53.5f) //TODO: needs more maintain 
+        // {
+        //     _animator.SetLookAtWeight(1,0.4f);
+        //     _animator.SetLookAtPosition(target);
+        // }
+        // else
+        // {
+        //     // elapsedTime += Time.deltaTime;
+        //     // state = Mathf.Lerp(1, 0, 1.0f);
+        //     // Debug.Log("state " + state +" " + Time.deltaTime);
+        //     _animator.SetLookAtWeight(0,0);
+        // }
+        // Vector3 lookDirX = Vector3.ProjectOnPlane(target, Vector3.right).normalized;
+        // Quaternion lookRotation = Quaternion.LookRotation(lookDirX);
+        // Quaternion towardsRotation = Quaternion.RotateTowards(lookRotation, headIKRotation, 45);
+        // headIKTransform.rotation = towardsRotation;
+
+        Vector3 flattenedLookAtVector = Vector3.ProjectOnPlane(target - headIKPosition, headIKTransform.up);
+        float dotProduct = Vector3.Dot(headIKTransform.forward, flattenedLookAtVector);
+        float lookWeight = Mathf.Clamp(dotProduct, 0f, 1f);
+        finalLookWeight = Mathf.Lerp(finalLookWeight, lookWeight, 1f);
+        float bodyWeight = finalLookWeight * 0.5f;
+        Debug.Log(finalLookWeight);
+        _animator.SetLookAtWeight(finalLookWeight, bodyWeight);
+        _animator.SetLookAtPosition(target);
+        
     }
 
     //assign head pass by ref 
-    private void AdjustHeadTarget(ref Quaternion headRotation, ref Vector3 headPosition, HumanBodyBones head)
+    private void AdjustHeadTarget(ref Quaternion headRotation, ref Vector3 headPosition, ref Transform headTransform,
+        HumanBodyBones head)
     {
         headPosition = _animator.GetBoneTransform(head).position;
         headRotation = _animator.GetBoneTransform(head).rotation; //get bone current rotation of the animator bone 
+        headTransform = _animator.GetBoneTransform(head).transform;
     }
 
     #endregion

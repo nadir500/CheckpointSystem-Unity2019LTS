@@ -82,15 +82,20 @@ public class DecalSystemManager : MonoBehaviour
     {
         float elapsedTime = 0.0f;
         float waitTime = 3.0f;
-        float lerpValue = 0;
+        float lerpValue = 1;
+        float fadeSpeed = 0.03f;
         yield return new WaitForSeconds(duration);
-        while (lerpValue < 1 )
+        while (lerpValue != 0 )
         {
             //do lerp  on opacity 
-            lerpValue = Mathf.Lerp(1, 0, (elapsedTime / waitTime));
-            elapsedTime += Time.deltaTime;
+            yield return new WaitForSeconds(0.01f);
+            lerpValue = Mathf.Lerp(1, 0, elapsedTime);
+            elapsedTime += fadeSpeed ;
+            Debug.Log("lerp value " + lerpValue);
+            decalProjector.fadeFactor = lerpValue;
         }
 
         decalProjector.gameObject.SetActive(false);
+        decalProjector.fadeFactor = 1; 
     }
 }

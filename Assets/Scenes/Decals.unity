@@ -1541,11 +1541,16 @@ PrefabInstance:
     - target: {fileID: 4013481926053274390, guid: 08e5ecbb0831ff24484f2088990b1f1f,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4013481926053274391, guid: 08e5ecbb0831ff24484f2088990b1f1f,
         type: 3}
       propertyPath: m_Size.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4013481926053274391, guid: 08e5ecbb0831ff24484f2088990b1f1f,
+        type: 3}
+      propertyPath: m_FadeFactor
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4013481926053274392, guid: 08e5ecbb0831ff24484f2088990b1f1f,

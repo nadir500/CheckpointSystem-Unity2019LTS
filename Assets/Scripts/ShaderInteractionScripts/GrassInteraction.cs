@@ -15,7 +15,7 @@ public class GrassInteraction : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-       // Shader.SetGlobalVector("_PlayerPos", transform.position);
-       mat.SetVector("_PlayerPos",transform.position);
+       Shader.SetGlobalVector("_PlayerPosition", transform.position);
+       // mat.SetVector("_PlayerPos",transform.position);
     }
 }
